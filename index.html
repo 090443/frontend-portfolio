@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<!--
+  文件用途：我的前端小工具作品集（单文件静态主页）
+  说明：纯前端静态页面，无登录、无后端、无接口、无外部资源，不收集任何提交信息。
+  用法：用浏览器直接打开本文件；把占位链接、邮箱和社交账号替换成自己的即可对外使用。
+  技术：原生 HTML + CSS + JavaScript，样式与脚本全部内联在本文件内。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="description" content="前端小工具作品集：单文件静态网页、自测题、计划生成器与个人展示页。">
+<title>我的前端小工具作品集</title>
+<style>
+/* ============================================================
+   1. 主题变量与基础重置
+   ============================================================ */
+:root{
+  --bg:#f4f9f8;
+  --card:#ffffff;
+  --ink:#0f2e2b;
+  --ink-soft:#3f5856;
+  --muted:#7b918f;
+  --brand:#0f8f88;
+  --brand-strong:#0a6d67;
+  --brand-soft:#e4f4f2;
+  --brand-line:#bfe2de;
+  --line:#dfeae8;
+  --warn-soft:#fdf3ec;
+  --warn-line:#f2ddcd;
+  --warn-ink:#8a5330;
+  --radius:14px;
+  --nav-h:62px;
+  --shadow:0 1px 2px rgba(15,46,43,.04);
+  --shadow-hover:0 12px 26px rgba(15,46,43,.09);
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+              "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size:16px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+
+h1,h2,h3,p,ul,ol{ margin:0; }
+ul,ol{ padding:0; list-style:none; }
+a{ color:var(--brand-strong); text-decoration:none; }
+a:hover{ text-decoration:underline; }
+
+.container{
+  width:100%;
+  max-width:1080px;
+  margin:0 auto;
+  padding:0 20px;
+}
+
+/* ============================================================
+   2. 顶部导航
+   ============================================================ */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  transition:box-shadow .18s ease;
+}
+.site-header.is-scrolled{ box-shadow:0 4px 16px rgba(15,46,43,.07); }
+
+.nav{
+  min-height:var(--nav-h);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.nav-brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:15.5px;
+  font-weight:700;
+  color:var(--ink);
+  white-space:nowrap;
+}
+.nav-brand:hover{ text-decoration:none; }
+.nav-brand .mark{
+  width:22px; height:22px;
+  border-radius:6px;
+  background:var(--brand);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  letter-spacing:0;
+  flex:none;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+.nav-links a{
+  display:block;
+  padding:8px 13px;
+  border-radius:8px;
+  font-size:14.5px;
+  color:var(--ink-soft);
+  transition:color .15s ease, background-color .15s ease;
+  white-space:nowrap;
+}
+.nav-links a:hover{
+  color:var(--brand-strong);
+  background:var(--brand-soft);
+  text-decoration:none;
+}
+.nav-links a.is-active{
+  color:var(--brand-strong);
+  background:var(--brand-soft);
+  font-weight:600;
+  box-shadow:inset 0 -2px 0 var(--brand);
+}
+.nav-links a:focus-visible{
+  outline:2px solid var(--brand);
+  outline-offset:2px;
+}
+
+/* ============================================================
+   3. 通用板块、标题与按钮
+   ============================================================ */
+.section{
+  padding:62px 0;
+  scroll-margin-top:calc(var(--nav-h) + 14px);
+}
+.section + .section{ border-top:1px solid var(--line); }
+
+.kicker{
+  display:inline-block;
+  font-size:12.5px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--brand);
+  margin-bottom:8px;
+}
+
+.section-head{ max-width:48em; }
+.section-head h2{
+  font-size:clamp(1.4rem, 3.4vw, 1.75rem);
+  line-height:1.35;
+  letter-spacing:-.01em;
+}
+.section-head .lead{
+  margin-top:9px;
+  color:var(--ink-soft);
+  font-size:15px;
+}
+
+/* ============================================================
+   4. 首屏
+   ============================================================ */
+.hero{ padding:66px 0 60px; }
+
+.hero h1{
+  font-size:clamp(1.85rem, 5vw, 2.45rem);
+  line-height:1.28;
+  letter-spacing:-.02em;
+  font-weight:700;
+  max-width:22em;
+}
+
+.hero-intro{
+  margin-top:16px;
+  max-width:40em;
+  color:var(--ink-soft);
+  font-size:clamp(15px, 2.2vw, 16.5px);
+}
+
+.hero-status{
+  margin-top:20px;
+  display:inline-flex;
+  align-items:flex-start;
+  gap:9px;
+  padding:10px 14px;
+  border-radius:10px;
+  background:var(--brand-soft);
+  border:1px solid var(--brand-line);
+  color:var(--brand-strong);
+  font-size:14px;
+}
+.hero-status .tick{
+  flex:none;
+  width:18px; height:18px;
+  margin-top:1px;
+  border-radius:50%;
+  background:var(--brand);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.hero-stats{
+  margin-top:28px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.hero-stats .stat{
+  padding:9px 15px;
+  border-radius:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  font-size:14px;
+  color:var(--ink-soft);
+}
+.hero-stats .stat b{
+  color:var(--ink);
+  font-size:15.5px;
+  margin-right:4px;
+}
+
+/* ============================================================
+   5. 作品展示
+   ============================================================ */
+.work-grid{
+  margin-top:26px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+  gap:16px;
+}
+
+.work-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px 20px 18px;
+  display:flex;
+  flex-direction:column;
+  transition:border-color .18s ease, box-shadow .18s ease;
+}
+.work-card:hover{
+  border-color:var(--brand-line);
+  box-shadow:var(--shadow-hover);
+}
+
+.work-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.work-index{
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.08em;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+
+.work-type{
+  padding:3px 10px;
+  border-radius:999px;
+  background:var(--brand-soft);
+  border:1px solid var(--brand-line);
+  color:var(--brand-strong);
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.work-card h3{
+  margin-top:10px;
+  font-size:17.5px;
+  line-height:1.45;
+  font-weight:700;
+}
+
+.work-desc{
+  margin-top:10px;
+  font-size:14.5px;
+  color:var(--ink-soft);
+}
+
+.work-tech{
+  margin-top:14px;
+  padding-top:13px;
+  border-top:1px dashed var(--line);
+}
+.work-tech .tech-label{
+  display:block;
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:.1em;
+  color:var(--muted);
+  margin-bottom:7px;
+}
+.tech-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.tech-chips li{
+  padding:3px 9px;
+  border-radius:6px;
+  background:#f5faf9;
+  border:1px solid var(--line);
+  font-size:12.5px;
+  color:var(--ink-soft);
+}
+
+.work-links{
+  margin-top:auto;
+  padding-top:16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.link-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:38px;
+  padding:0 15px;
+  border-radius:9px;
+  font-size:14px;
+  font-weight:600;
+  border:1px solid transparent;
+  transition:background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.link-btn:hover{ text-decoration:none; }
+
+.link-btn.primary{
+  background:var(--brand);
+  color:#fff;
+  border-color:var(--brand);
+}
+.link-btn.primary:hover{ background:var(--brand-strong); border-color:var(--brand-strong); }
+
+.link-btn.ghost{
+  background:#fff;
+  color:var(--brand-strong);
+  border-color:var(--brand-line);
+}
+.link-btn.ghost:hover{ background:var(--brand-soft); border-color:var(--brand); }
+
+/* 待填入的链接占位（不可点击） */
+.link-pending{
+  display:inline-flex;
+  align-items:center;
+  min-height:38px;
+  padding:0 11px;
+  border-radius:9px;
+  border:1px dashed var(--line);
+  background:#fafcfc;
+  color:var(--muted);
+  font-size:12.5px;
+}
+
+/* ============================================================
+   6. 服务范围 / 不接范围
+   ============================================================ */
+.service-grid{
+  margin-top:26px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+  gap:14px;
+}
+
+.service-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:17px 18px;
+  display:flex;
+  gap:12px;
+  transition:border-color .18s ease, box-shadow .18s ease;
+}
+.service-card:hover{
+  border-color:var(--brand-line);
+  box-shadow:var(--shadow-hover);
+}
+
+.service-card .num{
+  flex:none;
+  width:22px; height:22px;
+  margin-top:2px;
+  border-radius:6px;
+  background:var(--brand-soft);
+  border:1px solid var(--brand-line);
+  color:var(--brand-strong);
+  font-size:11.5px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-variant-numeric:tabular-nums;
+}
+
+.service-card h3{
+  font-size:15.5px;
+  font-weight:700;
+  line-height:1.5;
+}
+.service-card p{
+  margin-top:5px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+}
+
+/* 不接范围 */
+.scope-note{
+  margin-top:34px;
+  padding-top:26px;
+  border-top:1px dashed var(--line);
+}
+
+.scope-note h3{
+  font-size:16px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.scope-note h3::before{
+  content:"";
+  width:4px; height:15px;
+  border-radius:2px;
+  background:var(--warn-ink);
+  opacity:.55;
+}
+.scope-note .scope-lead{
+  margin-top:7px;
+  font-size:13.5px;
+  color:var(--muted);
+}
+
+.deny-list{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:8px 14px;
+}
+.deny-list li{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  padding:9px 12px;
+  border-radius:9px;
+  background:var(--warn-soft);
+  border:1px solid var(--warn-line);
+  font-size:13.5px;
+  color:var(--warn-ink);
+}
+.deny-list .cross{
+  flex:none;
+  width:16px; height:16px;
+  margin-top:3px;
+  border-radius:50%;
+  background:#f3e0d2;
+  color:#8a5330;
+  font-size:11px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ============================================================
+   7. 联系入口
+   ============================================================ */
+.contact-card{
+  margin-top:26px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:6px 22px;
+}
+
+.contact-row{
+  display:grid;
+  grid-template-columns:7em minmax(0,1fr);
+  gap:14px;
+  align-items:baseline;
+  padding:15px 0;
+  border-bottom:1px dashed var(--line);
+}
+.contact-row:last-child{ border-bottom:0; }
+
+.contact-label{ font-size:13.5px; color:var(--muted); }
+.contact-value{
+  font-size:15px;
+  font-weight:600;
+  color:var(--ink);
+  word-break:break-all;
+}
+
+.contact-note{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:10px;
+  background:var(--brand-soft);
+  border:1px solid var(--brand-line);
+  color:var(--brand-strong);
+  font-size:13.5px;
+}
+
+/* ============================================================
+   8. 页脚
+   ============================================================ */
+.site-footer{
+  margin-top:18px;
+  padding:26px 0 34px;
+  border-top:1px solid var(--line);
+  background:#fff;
+}
+.site-footer p{
+  font-size:13.5px;
+  color:var(--muted);
+  text-align:center;
+}
+
+/* ============================================================
+   9. 响应式适配（手机：导航上下排列、作品单列）
+   ============================================================ */
+@media (max-width:640px){
+  .container{ padding:0 15px; }
+
+  .site-header{ position:static; }
+  .site-header.is-scrolled{ box-shadow:none; }
+
+  .nav{
+    flex-direction:column;
+    align-items:stretch;
+    gap:0;
+    padding:12px 0 8px;
+  }
+  .nav-brand{ padding-bottom:9px; }
+  .nav-links{
+    flex-direction:column;
+    align-items:stretch;
+    gap:2px;
+    padding-top:4px;
+    border-top:1px solid var(--line);
+  }
+  .nav-links a{
+    padding:9px 12px;
+    border-radius:8px;
+    font-size:14.5px;
+  }
+  .nav-links a.is-active{ box-shadow:inset 3px 0 0 var(--brand); }
+
+  .section{ padding:42px 0; scroll-margin-top:14px; }
+  .hero{ padding:34px 0 38px; }
+
+  /* 作品卡片强制单列 */
+  .work-grid{ grid-template-columns:minmax(0, 1fr); gap:12px; }
+  .service-grid{ grid-template-columns:minmax(0, 1fr); gap:10px; }
+  .deny-list{ grid-template-columns:minmax(0, 1fr); }
+
+  .work-links .link-btn,
+  .work-links .link-pending{ flex:1 1 auto; }
+
+  .contact-card{ padding:4px 16px; }
+  .contact-row{
+    grid-template-columns:minmax(0, 1fr);
+    gap:2px;
+    padding:13px 0;
+  }
+}
+
+/* 系统开启“减少动态效果”时，关掉平滑滚动与过渡 */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *{ transition:none !important; animation:none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 顶部导航 ============ -->
+<header class="site-header" id="siteHeader">
+  <div class="container">
+    <nav class="nav" aria-label="页面导航">
+      <a class="nav-brand" href="#home">
+        <span class="mark" aria-hidden="true">FE</span>
+        前端小工具作品集
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="is-active">首页</a></li>
+        <li><a href="#works">作品</a></li>
+        <li><a href="#services">服务范围</a></li>
+        <li><a href="#contact">联系入口</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ 首屏 ============ -->
+  <section class="section hero" id="home">
+    <div class="container">
+      <p class="kicker">Portfolio</p>
+      <h1>我的前端小工具作品集</h1>
+      <p class="hero-intro">
+        用 HTML、CSS、JavaScript 制作轻量静态网页、自测题、计划生成器和个人展示页。
+      </p>
+
+      <p class="hero-status">
+        <span class="tick" aria-hidden="true">✓</span>
+        <span>以下作品均为单文件静态页面，可在浏览器直接打开。</span>
+      </p>
+
+      <div class="hero-stats" aria-label="作品概况">
+        <span class="stat"><b>3</b>个作品</span>
+        <span class="stat"><b>1</b>个文件交付</span>
+        <span class="stat"><b>0</b>外部依赖</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 作品展示 ============ -->
+  <section class="section" id="works">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Works</p>
+        <h2>作品展示</h2>
+        <p class="lead">三个都是纯前端静态页面：没有后端，没有数据库，打开就能用。</p>
+      </div>
+
+      <div class="work-grid">
+
+        <!-- 作品 1 -->
+        <article class="work-card">
+          <div class="work-head">
+            <span class="work-index">01</span>
+            <span class="work-type">互动测试工具</span>
+          </div>
+          <h3>求职准备度自测</h3>
+          <p class="work-desc">
+            10 道单选题，按维度计算准备度评分，输出结果分级、薄弱项建议和行动清单。
+          </p>
+
+          <div class="work-tech">
+            <span class="tech-label">技术特点</span>
+            <ul class="tech-chips">
+              <li>单文件 HTML/CSS/JS</li>
+              <li>本地保存答题进度</li>
+              <li>复制结果</li>
+              <li>导出 .txt</li>
+              <li>键盘操作</li>
+              <li>移动端适配</li>
+            </ul>
+          </div>
+
+          <div class="work-links">
+            <a class="link-btn primary" href="https://090443.github.io/job-readiness-quiz/"
+               target="_blank" rel="noopener noreferrer">在线预览</a>
+            <a class="link-btn ghost" href="https://github.com/090443/job-readiness-quiz"
+               target="_blank" rel="noopener noreferrer">查看源码</a>
+          </div>
+        </article>
+
+        <!-- 作品 2 -->
+        <article class="work-card">
+          <div class="work-head">
+            <span class="work-index">02</span>
+            <span class="work-type">表单输入 + 结果生成</span>
+          </div>
+          <h3>一周学习计划生成器</h3>
+          <p class="work-desc">
+            选择任务类型、每天可用时间、薄弱项和截止紧迫度后，生成一周学习安排、优先事项和不建议分散精力的事项。
+          </p>
+
+          <div class="work-tech">
+            <span class="tech-label">技术特点</span>
+            <ul class="tech-chips">
+              <li>单文件 HTML/CSS/JS</li>
+              <li>计划文本复制</li>
+              <li>导出 .txt</li>
+              <li>选项变更过期提示</li>
+              <li>移动端适配</li>
+            </ul>
+          </div>
+
+          <div class="work-links">
+            <a class="link-btn primary" href="https://090443.github.io/study-week-planner/"
+               target="_blank" rel="noopener noreferrer">在线预览</a>
+            <a class="link-btn ghost" href="https://github.com/090443/study-week-planner"
+               target="_blank" rel="noopener noreferrer">查看源码</a>
+          </div>
+        </article>
+
+        <!-- 作品 3 -->
+        <article class="work-card">
+          <div class="work-head">
+            <span class="work-index">03</span>
+            <span class="work-type">静态展示页模板</span>
+          </div>
+          <h3>大学生个人简历主页</h3>
+          <p class="work-desc">
+            包含个人介绍、基础技能、项目经历和联系方式板块，可替换占位文字后作为个人主页使用。
+          </p>
+
+          <div class="work-tech">
+            <span class="tech-label">技术特点</span>
+            <ul class="tech-chips">
+              <li>单文件 HTML/CSS/JS</li>
+              <li>导航锚点跳转</li>
+              <li>当前板块高亮</li>
+              <li>卡片悬停反馈</li>
+              <li>移动端适配</li>
+            </ul>
+          </div>
+
+          <div class="work-links">
+            <a class="link-btn primary" href="https://090443.github.io/student-resume-home/"
+               target="_blank" rel="noopener noreferrer">在线预览</a>
+            <a class="link-btn ghost" href="https://github.com/090443/student-resume-home"
+               target="_blank" rel="noopener noreferrer">查看源码</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 服务范围 ============ -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Scope</p>
+        <h2>服务范围</h2>
+        <p class="lead">可承接的轻量网页定制，都是纯静态、单文件交付，不需要服务器。</p>
+      </div>
+
+      <ul class="service-grid">
+        <li class="service-card">
+          <span class="num" aria-hidden="true">01</span>
+          <div>
+            <h3>静态展示单页</h3>
+            <p>一页讲清一个产品或一件事，纯 HTML/CSS，滚动阅读顺畅。</p>
+          </div>
+        </li>
+        <li class="service-card">
+          <span class="num" aria-hidden="true">02</span>
+          <div>
+            <h3>自测题 / 小测试页面</h3>
+            <p>单选题、按维度算分，输出结果分级与改进建议。</p>
+          </div>
+        </li>
+        <li class="service-card">
+          <span class="num" aria-hidden="true">03</span>
+          <div>
+            <h3>计划清单 / 结果生成器</h3>
+            <p>选几个条件，生成一份能照着执行的清单，支持复制和导出。</p>
+          </div>
+        </li>
+        <li class="service-card">
+          <span class="num" aria-hidden="true">04</span>
+          <div>
+            <h3>个人主页或课程作品展示页</h3>
+            <p>介绍、技能、项目、联系方式四块，替换文字即可上线。</p>
+          </div>
+        </li>
+        <li class="service-card">
+          <span class="num" aria-hidden="true">05</span>
+          <div>
+            <h3>移动端适配与源码整理</h3>
+            <p>手机和电脑都能正常浏览，代码分段注释、变量命名清楚。</p>
+          </div>
+        </li>
+        <li class="service-card">
+          <span class="num" aria-hidden="true">06</span>
+          <div>
+            <h3>基础文案排版与页面结构调整</h3>
+            <p>现有页面的标题层级、留白和阅读顺序，改成更好读的版本。</p>
+          </div>
+        </li>
+      </ul>
+
+      <!-- 不接范围 -->
+      <div class="scope-note">
+        <h3>不接范围</h3>
+        <p class="scope-lead">下面这些需要后端、账号体系或长期运维，不在我的承接范围内。</p>
+        <ul class="deny-list">
+          <li><span class="cross" aria-hidden="true">×</span><span>后端接口与数据库</span></li>
+          <li><span class="cross" aria-hidden="true">×</span><span>用户登录注册系统</span></li>
+          <li><span class="cross" aria-hidden="true">×</span><span>在线支付与订单系统</span></li>
+          <li><span class="cross" aria-hidden="true">×</span><span>复杂后台管理</span></li>
+          <li><span class="cross" aria-hidden="true">×</span><span>毕业设计、作业、考试内容代写</span></li>
+          <li><span class="cross" aria-hidden="true">×</span><span>需要服务器长期维护的系统</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 联系入口 ============ -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Contact</p>
+        <h2>联系入口</h2>
+        <p class="lead">有具体的页面想法，直接发邮件把需求说清楚就可以。</p>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-row">
+          <span class="contact-label">邮箱</span>
+          <span class="contact-value"><a href="mailto:your.name@example.com">your.name@example.com</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">社交账号</span>
+          <span class="contact-value">@your_handle（示例占位）</span>
+        </div>
+      </div>
+
+      <p class="contact-note">可说明页面用途、需要的板块、是否需要手机端适配和预计交付时间。</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ 页脚 ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>本站为静态作品集示例，不存储访问者提交的信息。</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   第 1 段：导航高亮（滚动时判断当前所在板块）
+   ============================================================ */
+(function () {
+  const navLinks = Array.prototype.slice.call(
+    document.querySelectorAll('#navLinks a')
+  );
+  const sections = navLinks
+    .map(function (link) {
+      const id = link.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      return el ? { id: id, el: el, link: link } : null;
+    })
+    .filter(Boolean);
+
+  const header = document.getElementById('siteHeader');
+  let ticking = false;
+
+  // 手机端导航是静态布局，不需要让出顶部高度
+  function navOffset() {
+    const style = window.getComputedStyle(header);
+    return style.position === 'sticky' ? header.offsetHeight : 0;
+  }
+
+  function setActive(id) {
+    sections.forEach(function (item) {
+      const isActive = item.id === id;
+      item.link.classList.toggle('is-active', isActive);
+      if (isActive) {
+        item.link.setAttribute('aria-current', 'true');
+      } else {
+        item.link.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function updateActive() {
+    const line = window.scrollY + navOffset() + 40;
+    let currentId = sections[0].id;
+
+    // 取“已经越过判定线”的最后一个板块
+    sections.forEach(function (item) {
+      if (item.el.offsetTop <= line) currentId = item.id;
+    });
+
+    // 滚动到页面底部时，强制高亮最后一个板块
+    const atBottom =
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 4;
+    if (atBottom) currentId = sections[sections.length - 1].id;
+
+    setActive(currentId);
+
+    // 滚动后给导航补一层轻阴影，避免和内容糊在一起
+    if (navOffset() > 0) {
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+    }
+  }
+
+  // 用极短定时器合并高频滚动事件，保证最后一次滚动一定被处理
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.setTimeout(function () {
+      updateActive();
+      ticking = false;
+    }, 16);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  /* ============================================================
+     第 2 段：点击导航先切高亮
+     （平滑滚动由 CSS scroll-behavior 完成，这里只处理状态）
+     ============================================================ */
+  navLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      setActive(link.getAttribute('href').slice(1));
+    });
+  });
+
+  updateActive();
+})();
+</script>
+</body>
+</html>
